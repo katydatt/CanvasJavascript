@@ -7,6 +7,47 @@ window.requestAnimFrame = (function(callback) {
         };
 })();
 
+var canvas = document.getElementById('canvas');
+var context = canvas.getContext('2d');
+
+var objectSpeed = 1;
+
+var recTop = {
+    x: -180,
+    y: 0,
+    width: 200,
+    height: 20,
+    isMoving: false,
+    speed: objectSpeed
+};
+
+var recRight = {
+    x: 480,
+    y: -130,
+    width: 20,
+    height: 200,
+    isMoving:false,
+    speed: -objectSpeed
+};
+
+var recBottom = {
+    x: 480,
+    y: 480,
+    width: 200,
+    height: 20,
+    isMoving:false,
+    speed: -objectSpeed
+};
+
+var recLeft = {
+    x: 0,
+    y: 480,
+    width: 20,
+    height: 200,
+    isMoving:false,
+    speed: objectSpeed
+};
+
 function drawRecTop(recTop, context) {
     context.beginPath();
     context.rect(recTop.x, recTop.y, recTop.width, recTop.height);
@@ -40,65 +81,77 @@ function drawRecLeft(recLeft, context) {
 
 }
 
+
+var squareXSpeed = objectSpeed;
+var squareYSpeed = objectSpeed;
+
 function animate(myRectangle, canvas, context, startTime) {
-    // update
-    recTop.x ++;
-    recRight.y ++;
-    recBottom.x -- ;
-    recLeft.y --;
+
+
+
+    if(recTop.x < 0){
+        recTop.x = 0;
+        squareXSpeed = objectSpeed;
+    } else if(recTop.x > canvas.width-recTop.width){
+        recTop.x = canvas.width-recTop.width;
+        squareXSpeed = -objectSpeed;
+    }
+
+    recTop.x += squareXSpeed;
+    //
+    if(recRight.y < 0){
+        recRight.y = 0;
+        squareYSpeed = objectSpeed;
+    } else if(recRight.y > canvas.height-recRight.height){
+        recRight.y = canvas.height-recRight.height;
+        squareYSpeed = -objectSpeed;
+    }
+
+    recRight.y += squareYSpeed;
+
+    // if(recBottom.x = canvas.width){
+    //     recBottom.x = canvas.width;
+    //     squareXSpeed = objectSpeed;
+    // } else if(recBottom.x < canvas.width-recBottom.width){
+    //     recBottom.x = canvas.width-recBottom.width;
+    //     squareXSpeed = -objectSpeed
+    // }
+    //
+    // recBottom.x -= squareXSpeed;
+    //
+    // if(recLeft.y < 0){
+    //     recLeft.y = 0;
+    //     squareYSpeed = speed;
+    // } else if(recLeft.y > canvas.height-recLeft.height){
+    //     recLeft.y = canvas.height-recLeft.height;
+    //     squareYSpeed = -speed;
+    // }
+    //
+    // recLeft.y += squareYSpeed;
+
 
     // clear
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     drawRecTop(recTop, context);
     drawRecRight(recRight, context);
-    drawRecBottom(recBottom, context);
-    drawRecLeft(recLeft, context);
+    // drawRecBottom(recBottom, context);
+    // drawRecLeft(recLeft, context);
 
 
     // request new frame
     requestAnimFrame(function() {
-        animate(myRectangle, canvas, context, startTime);
+        animate(recTop, canvas, context, startTime);
     });
 }
 
 
 
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
-
-var recTop = {
-    x: -180,
-    y: 0,
-    width: 150,
-    height: 20
-};
-
-var recRight = {
-    x: 480,
-    y: 0,
-    width: 20,
-    height: 150
-};
-
-var recBottom = {
-    x: 480,
-    y: 480,
-    width: 150,
-    height: 20
-};
-
-var recLeft = {
-    x: 0,
-    y: 480,
-    width: 20,
-    height: 150
-};
 
 
 
 // wait one second before starting animation
 setTimeout(function() {
     var startTime = (new Date()).getTime();
-    animate(recTop, canvas, context, startTime);
-}, 2000);
+    animate(recBottom, canvas, context, startTime);
+}, 1000);
