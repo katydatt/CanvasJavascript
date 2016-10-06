@@ -11,23 +11,23 @@ var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 
 
-var objectSpeed = 10;
+var objectSpeed = 8;
 
 var recTop = {
     x: -300,
     y: 0,
     width: 300,
     height: 20,
-    isMoving: true,
+    isMoving: true
 
 };
 
 var recRight = {
     x: 480,
-    y: -300,
+    y: -480,
     width: 20,
     height: 300,
-    isMoving:false,
+    isMoving:false
 
 };
 
@@ -36,7 +36,7 @@ var recBottom = {
     y: 480,
     width: 300,
     height: 20,
-    isMoving:false,
+    isMoving:false
 
 };
 
@@ -45,7 +45,7 @@ var recLeft = {
     y: 500,
     width: 20,
     height: 300,
-    isMoving:false,
+    isMoving:false
 
 };
 
@@ -89,54 +89,58 @@ var squareYSpeed = objectSpeed;
 
 function animate(myRectangle, canvas, context, startTime) {
 
+    if(recTop.isMoving)recTop.x += objectSpeed;
+    if(recRight.isMoving)recRight.y += objectSpeed;
+    if(recBottom.isMoving)recBottom.x -= objectSpeed;
+    if(recLeft.isMoving)recLeft.y -= objectSpeed;
+
+    if(recTop.x > canvas.width && recLeft.isMoving){
+        //TOP RECTANGLE HAS LEFT THE STAGE
+        recTop.isMoving = false;
+        recTop.x = -recTop.width;
+    }
 
 
     if(recTop.x > canvas.width - recTop.width && !recRight.isMoving){
         //START RIGHT RECTANGLE MOVEMENT
-        recRight.y = -recRight.height + recRight.width;
         recRight.isMoving = true;
+        recRight.y = - recRight.height + recRight.width;
+
     }
-    if(recTop.x > canvas.width){
-        //TOP RECTANGLE HAS LEFT THE STAGE
-        recTop.isMoving = false;
-    }
+
+
 
     if(recRight.y > canvas.height - recRight.height && !recBottom.isMoving){
         //START BOTTOM RECTANGLE MOVEMENT
-        recBottom.x = recBottom.height;
         recBottom.isMoving = true;
-    }
-    if(recRight.x > canvas.width){
-        //BOTTOM RECTANGLE HAS LEFT THE STAGE
+        recBottom.x = canvas.width-recBottom.height;
 
-        recRight.isMoving = false;
     }
 
-    if(recBottom.x == 0 && !recLeft.isMoving){
+
+
+    if(recBottom.x < 0 && !recLeft.isMoving){
         //START LEFT RECTANGLE MOVEMENT
-        recLeft.y = recLeft.width;
+        // recLeft.y = - recLeft.width + recLeft.height;
         recLeft.isMoving = true;
-    }
-    if(recBottom.x < - recBottom.width){
-        //LEFT RECTANGLE HAS LEFT THE STAGE
-        recBottom.isMoving = false;
+        recLeft.y = canvas.height-recLeft.width;
+
     }
 
-    if(recLeft.y == 0 && !recTop.isMoving){
+
+
+    if(recLeft.y < 0 && !recTop.isMoving){
         //START BOTTOM RECTANGLE MOVEMENT
-        recTop.x = recTop.height;
         recTop.isMoving = true;
-    }
-    if(recLeft.x < - canvas.height){
-        //BOTTOM RECTANGLE HAS LEFT THE STAGE
-        recLeft.isMoving = false;
+        recTop.x = recTop.height - recTop.width;
+
+        console.log("bottom moving " + recBottom.isMoving);
     }
 
 
-    if(recTop.isMoving)recTop.x += objectSpeed;
-    if(recRight.isMoving)recRight.y += squareXSpeed;
-    if(recBottom.isMoving)recBottom.x -= squareXSpeed;
-    if(recLeft.isMoving)recLeft.y -= squareXSpeed;
+
+    //
+
 
 
 
