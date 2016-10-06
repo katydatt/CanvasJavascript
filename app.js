@@ -10,42 +10,43 @@ window.requestAnimFrame = (function(callback) {
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 
-var objectSpeed = 1;
+
+var objectSpeed = 10;
 
 var recTop = {
-    x: -180,
+    x: -300,
     y: 0,
-    width: 200,
+    width: 300,
     height: 20,
-    isMoving: false,
-    speed: objectSpeed
+    isMoving: true,
+
 };
 
 var recRight = {
     x: 480,
-    y: -130,
+    y: -300,
     width: 20,
-    height: 200,
+    height: 300,
     isMoving:false,
-    speed: -objectSpeed
+
 };
 
 var recBottom = {
-    x: 480,
+    x: 500,
     y: 480,
-    width: 200,
+    width: 300,
     height: 20,
     isMoving:false,
-    speed: -objectSpeed
+
 };
 
 var recLeft = {
     x: 0,
-    y: 480,
+    y: 500,
     width: 20,
-    height: 200,
+    height: 300,
     isMoving:false,
-    speed: objectSpeed
+
 };
 
 function drawRecTop(recTop, context) {
@@ -85,49 +86,59 @@ function drawRecLeft(recLeft, context) {
 var squareXSpeed = objectSpeed;
 var squareYSpeed = objectSpeed;
 
+
 function animate(myRectangle, canvas, context, startTime) {
 
 
 
-    if(recTop.x < 0){
-        recTop.x = 0;
-        squareXSpeed = objectSpeed;
-    } else if(recTop.x > canvas.width-recTop.width){
-        recTop.x = canvas.width-recTop.width;
-        squareXSpeed = -objectSpeed;
+    if(recTop.x > canvas.width - recTop.width && !recRight.isMoving){
+        //START RIGHT RECTANGLE MOVEMENT
+        recRight.y = -recRight.height + recRight.width;
+        recRight.isMoving = true;
+    }
+    if(recTop.x > canvas.width){
+        //TOP RECTANGLE HAS LEFT THE STAGE
+        recTop.isMoving = false;
     }
 
-    recTop.x += squareXSpeed;
-    //
-    if(recRight.y < 0){
-        recRight.y = 0;
-        squareYSpeed = objectSpeed;
-    } else if(recRight.y > canvas.height-recRight.height){
-        recRight.y = canvas.height-recRight.height;
-        squareYSpeed = -objectSpeed;
+    if(recRight.y > canvas.height - recRight.height && !recBottom.isMoving){
+        //START BOTTOM RECTANGLE MOVEMENT
+        recBottom.x = recBottom.height;
+        recBottom.isMoving = true;
+    }
+    if(recRight.x > canvas.width){
+        //BOTTOM RECTANGLE HAS LEFT THE STAGE
+
+        recRight.isMoving = false;
     }
 
-    recRight.y += squareYSpeed;
+    if(recBottom.x == 0 && !recLeft.isMoving){
+        //START LEFT RECTANGLE MOVEMENT
+        recLeft.y = recLeft.width;
+        recLeft.isMoving = true;
+    }
+    if(recBottom.x < - recBottom.width){
+        //LEFT RECTANGLE HAS LEFT THE STAGE
+        recBottom.isMoving = false;
+    }
 
-    // if(recBottom.x = canvas.width){
-    //     recBottom.x = canvas.width;
-    //     squareXSpeed = objectSpeed;
-    // } else if(recBottom.x < canvas.width-recBottom.width){
-    //     recBottom.x = canvas.width-recBottom.width;
-    //     squareXSpeed = -objectSpeed
-    // }
-    //
-    // recBottom.x -= squareXSpeed;
-    //
-    // if(recLeft.y < 0){
-    //     recLeft.y = 0;
-    //     squareYSpeed = speed;
-    // } else if(recLeft.y > canvas.height-recLeft.height){
-    //     recLeft.y = canvas.height-recLeft.height;
-    //     squareYSpeed = -speed;
-    // }
-    //
-    // recLeft.y += squareYSpeed;
+    if(recLeft.y == 0 && !recTop.isMoving){
+        //START BOTTOM RECTANGLE MOVEMENT
+        recTop.x = recTop.height;
+        recTop.isMoving = true;
+    }
+    if(recLeft.x < - canvas.height){
+        //BOTTOM RECTANGLE HAS LEFT THE STAGE
+        recLeft.isMoving = false;
+    }
+
+
+    if(recTop.isMoving)recTop.x += objectSpeed;
+    if(recRight.isMoving)recRight.y += squareXSpeed;
+    if(recBottom.isMoving)recBottom.x -= squareXSpeed;
+    if(recLeft.isMoving)recLeft.y -= squareXSpeed;
+
+
 
 
     // clear
@@ -135,8 +146,8 @@ function animate(myRectangle, canvas, context, startTime) {
 
     drawRecTop(recTop, context);
     drawRecRight(recRight, context);
-    // drawRecBottom(recBottom, context);
-    // drawRecLeft(recLeft, context);
+    drawRecBottom(recBottom, context);
+    drawRecLeft(recLeft, context);
 
 
     // request new frame
