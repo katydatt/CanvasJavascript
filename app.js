@@ -13,11 +13,13 @@ var context = canvas.getContext('2d');
 
 var objectSpeed = 8;
 
+var snakeWidth = 20;
+
 var recTop = {
     x: -300,
     y: 0,
     width: 300,
-    height: 20,
+    height: snakeWidth,
     isMoving: true
 
 };
@@ -25,7 +27,7 @@ var recTop = {
 var recRight = {
     x: 480,
     y: -480,
-    width: 20,
+    width: snakeWidth,
     height: 300,
     isMoving:false
 
@@ -35,7 +37,7 @@ var recBottom = {
     x: 500,
     y: 480,
     width: 300,
-    height: 20,
+    height: snakeWidth,
     isMoving:false
 
 };
@@ -43,7 +45,7 @@ var recBottom = {
 var recLeft = {
     x: 0,
     y: 500,
-    width: 20,
+    width: snakeWidth,
     height: 300,
     isMoving:false
 
@@ -82,67 +84,68 @@ function drawRecLeft(recLeft, context) {
 
 }
 
-
-var squareXSpeed = objectSpeed;
-var squareYSpeed = objectSpeed;
-
-
 function animate(myRectangle, canvas, context, startTime) {
+
+
+    if(recTop.isMoving){
+        if(recTop.x > canvas.width - recTop.width && !recRight.isMoving){
+            //START RIGHT RECTANGLE MOVEMENT
+            recRight.isMoving = true;
+            recRight.y = - recRight.height + recRight.width;
+
+        } else if(recTop.x >= canvas.width){
+            recTop.isMoving = false;
+        }
+    } else {
+        recTop.x = -recTop.width;
+    }
+
+    if(recRight.isMoving){
+        if(recRight.y > canvas.height - recRight.height && !recBottom.isMoving){
+            //START RIGHT RECTANGLE MOVEMENT
+            recBottom.isMoving = true;
+            recBottom.x = canvas.width - recBottom.height;
+
+        } else if(recRight.y >= canvas.height ){
+            recRight.isMoving = false;
+        }
+    } else {
+        recRight.y = -recRight.height;
+    }
+
+    if(recBottom.isMoving){
+        if(recBottom.x < 0 && !recLeft.isMoving){
+            //START RIGHT RECTANGLE MOVEMENT
+            recLeft.isMoving = true;
+            recLeft.y = canvas.height - recLeft.width;
+
+        } else if(recBottom.x < -recBottom.width){
+            recBottom.isMoving = false;
+        }
+    } else {
+        recBottom.x = canvas.width;
+    }
+
+    if(recLeft.isMoving){
+        if(recLeft.y < 0 && !recTop.isMoving){
+            //START RIGHT RECTANGLE MOVEMENT
+            recTop.isMoving = true;
+            recTop.x = -recTop.width + recTop.height;
+
+        } else if(recLeft.y <= -recLeft.height){
+            recLeft.isMoving = false;
+        }
+    } else {
+        recLeft.y = canvas.height;
+    }
 
     if(recTop.isMoving)recTop.x += objectSpeed;
     if(recRight.isMoving)recRight.y += objectSpeed;
     if(recBottom.isMoving)recBottom.x -= objectSpeed;
     if(recLeft.isMoving)recLeft.y -= objectSpeed;
 
-    if(recTop.x > canvas.width && recLeft.isMoving){
-        //TOP RECTANGLE HAS LEFT THE STAGE
-        recTop.isMoving = false;
-        recTop.x = -recTop.width;
-    }
-
-
-    if(recTop.x > canvas.width - recTop.width && !recRight.isMoving){
-        //START RIGHT RECTANGLE MOVEMENT
-        recRight.isMoving = true;
-        recRight.y = - recRight.height + recRight.width;
-
-    }
-
-
-
-    if(recRight.y > canvas.height - recRight.height && !recBottom.isMoving){
-        //START BOTTOM RECTANGLE MOVEMENT
-        recBottom.isMoving = true;
-        recBottom.x = canvas.width-recBottom.height;
-
-    }
-
-
-
-    if(recBottom.x < 0 && !recLeft.isMoving){
-        //START LEFT RECTANGLE MOVEMENT
-        // recLeft.y = - recLeft.width + recLeft.height;
-        recLeft.isMoving = true;
-        recLeft.y = canvas.height-recLeft.width;
-
-    }
-
-
-
-    if(recLeft.y < 0 && !recTop.isMoving){
-        //START BOTTOM RECTANGLE MOVEMENT
-        recTop.isMoving = true;
-        recTop.x = recTop.height - recTop.width;
-
-        console.log("bottom moving " + recBottom.isMoving);
-    }
-
-
 
     //
-
-
-
 
 
     // clear
@@ -156,12 +159,10 @@ function animate(myRectangle, canvas, context, startTime) {
 
     // request new frame
     requestAnimFrame(function() {
-        animate(recTop, canvas, context, startTime);
+        animate(recLeft, canvas, context, startTime);
     });
+
 }
-
-
-
 
 
 
