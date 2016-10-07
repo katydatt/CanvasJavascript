@@ -14,11 +14,12 @@ var context = canvas.getContext('2d');
 var objectSpeed = 8;
 
 var snakeWidth = 20;
+var snakeHeight = 300;
 
 var recTop = {
     x: -300,
     y: 0,
-    width: 300,
+    width: snakeHeight,
     height: snakeWidth,
     isMoving: true
 
@@ -28,7 +29,7 @@ var recRight = {
     x: 480,
     y: -480,
     width: snakeWidth,
-    height: 300,
+    height: snakeHeight,
     isMoving:false
 
 };
@@ -36,7 +37,7 @@ var recRight = {
 var recBottom = {
     x: 500,
     y: 480,
-    width: 300,
+    width: snakeHeight,
     height: snakeWidth,
     isMoving:false
 
@@ -46,7 +47,7 @@ var recLeft = {
     x: 0,
     y: 500,
     width: snakeWidth,
-    height: 300,
+    height: snakeHeight,
     isMoving:false
 
 };
@@ -88,10 +89,10 @@ function animate(myRectangle, canvas, context, startTime) {
 
 
     if(recTop.isMoving){
-        if(recTop.x > canvas.width - recTop.width && !recRight.isMoving){
+        if(recTop.x > canvas.width - snakeHeight && !recRight.isMoving){
             //START RIGHT RECTANGLE MOVEMENT
             recRight.isMoving = true;
-            recRight.y = - recRight.height + recRight.width;
+            recRight.y = - snakeHeight + snakeWidth;
 
         } else if(recTop.x >= canvas.width){
             recTop.isMoving = false;
@@ -101,25 +102,26 @@ function animate(myRectangle, canvas, context, startTime) {
     }
 
     if(recRight.isMoving){
-        if(recRight.y > canvas.height - recRight.height && !recBottom.isMoving){
+        if(recRight.y > canvas.height - snakeHeight && !recBottom.isMoving){
             //START RIGHT RECTANGLE MOVEMENT
             recBottom.isMoving = true;
-            recBottom.x = canvas.width - recBottom.height;
+            recBottom.x = canvas.width - snakeWidth;
 
         } else if(recRight.y >= canvas.height ){
             recRight.isMoving = false;
         }
     } else {
-        recRight.y = -recRight.height;
+        recRight.y = -snakeHeight;
+
     }
 
     if(recBottom.isMoving){
         if(recBottom.x < 0 && !recLeft.isMoving){
             //START RIGHT RECTANGLE MOVEMENT
             recLeft.isMoving = true;
-            recLeft.y = canvas.height - recLeft.width;
+            recLeft.y = canvas.height - snakeWidth;
 
-        } else if(recBottom.x < -recBottom.width){
+        } else if(recBottom.x < -snakeHeight){
             recBottom.isMoving = false;
         }
     } else {
@@ -130,9 +132,9 @@ function animate(myRectangle, canvas, context, startTime) {
         if(recLeft.y < 0 && !recTop.isMoving){
             //START RIGHT RECTANGLE MOVEMENT
             recTop.isMoving = true;
-            recTop.x = -recTop.width + recTop.height;
+            recTop.x = -snakeHeight + snakeWidth;
 
-        } else if(recLeft.y <= -recLeft.height){
+        } else if(recLeft.y <= -snakeHeight){
             recLeft.isMoving = false;
         }
     } else {
