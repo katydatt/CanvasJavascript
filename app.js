@@ -15,9 +15,11 @@ var objectSpeed = 8;
 
 var snakeWidth = 20;
 var snakeHeight = 300;
+var maxWidth = canvas.width;
+var maxHeight = canvas.height;
 
 var recTop = {
-    x: -300,
+    x: -snakeHeight,
     y: 0,
     width: snakeHeight,
     height: snakeWidth,
@@ -26,8 +28,8 @@ var recTop = {
 };
 
 var recRight = {
-    x: 480,
-    y: -480,
+    x: (maxWidth - snakeWidth),
+    y: -(maxWidth - snakeWidth),
     width: snakeWidth,
     height: snakeHeight,
     isMoving:false
@@ -35,8 +37,8 @@ var recRight = {
 };
 
 var recBottom = {
-    x: 500,
-    y: 480,
+    x: maxWidth,
+    y: (maxWidth - snakeWidth),
     width: snakeHeight,
     height: snakeWidth,
     isMoving:false
@@ -45,69 +47,51 @@ var recBottom = {
 
 var recLeft = {
     x: 0,
-    y: 500,
+    y: maxWidth,
     width: snakeWidth,
     height: snakeHeight,
     isMoving:false
 
 };
 
-function drawRecTop(recTop, context) {
-    context.beginPath();
-    context.rect(recTop.x, recTop.y, recTop.width, recTop.height);
-    context.fillStyle = '#FB0202';
-    context.fill();
+var snake = [recTop, recRight, recBottom, recLeft];
 
+// Drawing the snake
+
+function drawSnake(snake, context) {
+    for (var i = 0 ; i < snake.length ; i ++) {
+        context.beginPath();
+        context.rect(snake[i].x, snake[i].y, snake[i].width, snake[i].height);
+        context.fillStyle = '#FB0202';
+        context.fill();
+    }
 }
 
-
-function drawRecRight(recRight, context) {
-    context.beginPath();
-    context.rect(recRight.x , recRight.y , recRight.width, recRight.height);
-    context.fillStyle = '#FB0202';
-    context.fill();
-
-}
-
-function drawRecBottom(recBottom, context) {
-    context.beginPath();
-    context.rect(recBottom.x , recBottom.y , recBottom.width, recBottom.height);
-    context.fillStyle = '#FB0202';
-    context.fill();
-
-}
-
-function drawRecLeft(recLeft, context) {
-    context.beginPath();
-    context.rect(recLeft.x , recLeft.y , recLeft.width, recLeft.height);
-    context.fillStyle = '#FB0202';
-    context.fill();
-
-}
+// Animate the snake
 
 function animate(myRectangle, canvas, context, startTime) {
 
 
     if(recTop.isMoving){
-        if(recTop.x > canvas.width - snakeHeight && !recRight.isMoving){
+        if(recTop.x > maxWidth - snakeHeight && !recRight.isMoving){
             //START RIGHT RECTANGLE MOVEMENT
             recRight.isMoving = true;
             recRight.y = - snakeHeight + snakeWidth;
 
-        } else if(recTop.x >= canvas.width){
+        } else if(recTop.x >= maxWidth){
             recTop.isMoving = false;
         }
     } else {
-        recTop.x = -recTop.width;
+        recTop.x = -snakeHeight;
     }
 
     if(recRight.isMoving){
-        if(recRight.y > canvas.height - snakeHeight && !recBottom.isMoving){
-            //START RIGHT RECTANGLE MOVEMENT
+        if(recRight.y > maxHeight - snakeHeight && !recBottom.isMoving){
+            //START BOTTOM RECTANGLE MOVEMENT
             recBottom.isMoving = true;
-            recBottom.x = canvas.width - snakeWidth;
+            recBottom.x = maxWidth - snakeWidth;
 
-        } else if(recRight.y >= canvas.height ){
+        } else if(recRight.y >= maxHeight ){
             recRight.isMoving = false;
         }
     } else {
@@ -117,20 +101,20 @@ function animate(myRectangle, canvas, context, startTime) {
 
     if(recBottom.isMoving){
         if(recBottom.x < 0 && !recLeft.isMoving){
-            //START RIGHT RECTANGLE MOVEMENT
+            //START LEFT RECTANGLE MOVEMENT
             recLeft.isMoving = true;
-            recLeft.y = canvas.height - snakeWidth;
+            recLeft.y = maxHeight - snakeWidth;
 
         } else if(recBottom.x < -snakeHeight){
             recBottom.isMoving = false;
         }
     } else {
-        recBottom.x = canvas.width;
+        recBottom.x = maxWidth;
     }
 
     if(recLeft.isMoving){
         if(recLeft.y < 0 && !recTop.isMoving){
-            //START RIGHT RECTANGLE MOVEMENT
+            //START TOP RECTANGLE MOVEMENT
             recTop.isMoving = true;
             recTop.x = -snakeHeight + snakeWidth;
 
@@ -138,7 +122,7 @@ function animate(myRectangle, canvas, context, startTime) {
             recLeft.isMoving = false;
         }
     } else {
-        recLeft.y = canvas.height;
+        recLeft.y = maxHeight;
     }
 
     if(recTop.isMoving)recTop.x += objectSpeed;
@@ -147,21 +131,17 @@ function animate(myRectangle, canvas, context, startTime) {
     if(recLeft.isMoving)recLeft.y -= objectSpeed;
 
 
-    //
-
 
     // clear
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, maxWidth, maxHeight);
 
-    drawRecTop(recTop, context);
-    drawRecRight(recRight, context);
-    drawRecBottom(recBottom, context);
-    drawRecLeft(recLeft, context);
+
+    drawSnake(snake, context);
 
 
     // request new frame
     requestAnimFrame(function() {
-        animate(recLeft, canvas, context, startTime);
+        animate(snake, canvas, context, startTime);
     });
 
 }
@@ -171,5 +151,5 @@ function animate(myRectangle, canvas, context, startTime) {
 // wait one second before starting animation
 setTimeout(function() {
     var startTime = (new Date()).getTime();
-    animate(recBottom, canvas, context, startTime);
+    animate(snake, canvas, context, startTime);
 }, 1000);
