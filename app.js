@@ -7,8 +7,9 @@ window.requestAnimFrame = (function(callback) {
         };
 })();
 
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
 
 
 var objectSpeed = 8;
@@ -59,18 +60,20 @@ var snake = [recTop, recRight, recBottom, recLeft];
 // Drawing the snake
 
 function drawSnake(snake, context) {
+
+    drawCanvas.start();
+
     for (var i = 0 ; i < snake.length ; i ++) {
-        context.beginPath();
-        context.rect(snake[i].x, snake[i].y, snake[i].width, snake[i].height);
-        context.fillStyle = '#FB0202';
-        context.fill();
+        ctx.beginPath();
+        ctx.rect(snake[i].x, snake[i].y, snake[i].width, snake[i].height);
+        ctx.fillStyle = "#f44242";
+        ctx.fill();
     }
 }
 
 // Animate the snake
 
 function animate(myRectangle, canvas, context, startTime) {
-
 
     if(recTop.isMoving){
         if(recTop.x > maxWidth - snakeHeight && !recRight.isMoving){
@@ -133,15 +136,15 @@ function animate(myRectangle, canvas, context, startTime) {
 
 
     // clear
-    context.clearRect(0, 0, maxWidth, maxHeight);
+    ctx.clearRect(0, 0, maxWidth, maxHeight);
 
 
-    drawSnake(snake, context);
+    drawSnake(snake, ctx);
 
 
     // request new frame
     requestAnimFrame(function() {
-        animate(snake, canvas, context, startTime);
+        animate(snake, canvas, ctx, startTime);
     });
 
 }
@@ -151,5 +154,5 @@ function animate(myRectangle, canvas, context, startTime) {
 // wait one second before starting animation
 setTimeout(function() {
     var startTime = (new Date()).getTime();
-    animate(snake, canvas, context, startTime);
+    animate(snake, canvas, ctx, startTime);
 }, 1000);
