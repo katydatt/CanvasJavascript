@@ -3,8 +3,8 @@ class Snake {
 
     constructor (selector, options = {}) {
         this.options = {
-            thickness: options.thickness || 20,
-            length: options.length || 300,
+            width: options.thickness || 20,
+            height: options.length || 300,
             speed: options.speed || 4,
             x: options.x,
             y: options.y
@@ -24,7 +24,7 @@ class Snake {
 
         this.isSnakeMoving = false
         this.canvas = false
-        // this.snake = []
+        this.snakes = []
 
     }
 
@@ -64,18 +64,18 @@ class Snake {
         }
     }
 
-    _createSnake () {
-        var ctx = this.canvas.getContext('2d')
 
-        ctx.beginPath()
-        ctx.rect(
-            this.options.x,
-            this.options.y,
-            this.options.length,
-            this.options.thickness)
-        ctx.fillStyle = "#f44242"
-        ctx.fill()
-        // snake.push(rec)
+    _createSnake () {
+            var ctx = this.canvas.getContext('2d')
+
+            ctx.beginPath()
+            ctx.rect(
+                this.options.x,
+                this.options.y,
+                this.options.length,
+                this.options.thickness)
+            ctx.fillStyle = "#f44242"
+            ctx.fill()
     }
 
 
@@ -87,67 +87,68 @@ class Snake {
         this._animateSnakeLeft ()
 
     }
-
     _animateSnakeTop () {
-        if (this.isSnakeMoving) {
-             if(this.x > canvas.width - this.length && !snakeRight.isSnakeMoving) {
-                 this.isSnakeMoving = true;
-                 this.y = - this.thickness + this.length;
-             } else if(this.x >= canvas.width ) {
-                 this.isSnakeMoving = false;
-             } else {
-                 this.x = - this.thickness;
-             }
+       if (this.isSnakeMoving) {
+            if(this.x > this.canvas.width - this.length && !snakeRight.isSnakeMoving) {
+                this.isSnakeMoving = true;
+                this.y = - this.thickness + this.length;
+            } else if(this.x >= this.canvas.width ) {
+                this.isSnakeMoving = false;
+            } else {
+                this.x = - this.thickness;
+            }
 
-             this.x += speed;
+            this.x += speed;
 
-        }
-    }
-    _animateSnakeRight() {
-        if (this.isSnakeMoving) {
-             if(this.x > canvas.height - this.length && !snakeBottom.isSnakeMoving) {
-                 this.isSnakeMoving = true;
-                 this.x = canvas.width - this.thickness;
-             } else if(this.x >= canvas.width ) {
-                 this.isSnakeMoving = false;
-             } else {
-                 this.x = - this.length;
-             }
+       }
+   }
+   _animateSnakeRight() {
+       if (this.isSnakeMoving) {
+            if(this.x > this.canvas.height - this.length && !snakeBottom.isSnakeMoving) {
+                this.isSnakeMoving = true;
+                this.x = this.canvas.width - this.thickness;
+            } else if(this.x >= this.canvas.width ) {
+                this.isSnakeMoving = false;
+            } else {
+                this.x = - this.length;
+            }
 
-             this.y += speed;
+            this.y += speed;
 
-        }
-    }
-    _animateSnakeBottom() {
-        if (this.isSnakeMoving) {
-             if(this.x < 0 && !snakeLeft.isSnakeMoving) {
-                 this.isSnakeMoving = true;
-                 this.y = canvas.height - this.thickness;
-             } else if(this.x < - this.length ) {
-                 this.isSnakeMoving = false;
-             } else {
-                 this.x = canvas.width;
-             }
+       }
+   }
+   _animateSnakeBottom() {
+       if (this.isSnakeMoving) {
+            if(this.x < 0 && !snakeLeft.isSnakeMoving) {
+                this.isSnakeMoving = true;
+                this.y = this.canvas.height - this.thickness;
+            } else if(this.x < - this.length ) {
+                this.isSnakeMoving = false;
+            } else {
+                this.x = this.canvas.width;
+            }
 
-             this.x -= speed;
+            this.x -= speed;
 
-        }
-    }
-    _animateSnakeLeft() {
-        if (this.isSnakeMoving) {
-             if(this.y < 0 && !snakeTop.isSnakeMoving) {
-                 this.isSnakeMoving = true;
-                 this.x = -this.length + this.thickness;
-             } else if(this.x < - this.length ) {
-                 this.isSnakeMoving = false;
-             } else {
-                 this.y = canvas.height;
-             }
+       }
+   }
+   _animateSnakeLeft() {
+       if (this.isSnakeMoving) {
+            if(this.y < 0 && !snakeTop.isSnakeMoving) {
+                this.isSnakeMoving = true;
+                this.x = -this.length + this.thickness;
+            } else if(this.x < - this.length ) {
+                this.isSnakeMoving = false;
+            } else {
+                this.y = this.canvas.height;
+            }
 
-             this.y -= speed;
+            this.y -= speed;
 
-        }
-    }
+       }
+   }
+
+
 
 
     _bindEvents () {
@@ -194,27 +195,51 @@ class Snake {
     }
 
     stop () {
-        // clearInterval(animation)
+        // clearInterval()
     }
 
 }
 
-
-let snake = new Snake('.snakeContainer', {
+let snakeTop = new Snake('.snakeContainer1', {
     thickness: 20,
     length: 300,
     x: -300,
     y: 0
 })
 
+let snakeRight = new Snake('.snakeContainer2', {
+    length: 300,
+    thickness: 20,
+    x: this.canvas.width - 300,
+    y: 0
+})
 
-setTimeout(function () {
+let snakeBottom = new Snake('.snakeContainer3', {
+    length: 300,
+    thickness: 20,
+    x: this.canvas.width,
+    y: this.canvas.width - 20
+})
 
-    snake.start()
+let snakeLeft = new Snake('.snakeContainer4', {
+    thickness: 20,
+    length: 300,
+    x: 0,
+    y: this.canvas.width
+})
+
+this.snakes = [snakeTop, snakeRight, snakeBottom, snakeLeft]
+
 
     setTimeout(function () {
-        // snake.stop()
+        for(var i = 0 ; i < this.snakes.length; i++ ) {
+             this.snakes[i].start()
+             console.log(this.snakes[i])
+        }
 
-    }, 5000)
+        setTimeout(function () {
+            // this.snakes[i].stop()
 
-}, 1000)
+        }, 5000)
+
+    }, 1000)
