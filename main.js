@@ -121,11 +121,12 @@ class Snake {
         this.ctx.fillStyle = "#f44242"
         this.ctx.fill()
 
+
     }
 
     _clearSnake () {
         this.ctx.clearRect(this.options.x, this.options.y, this.options.width, this.options.height);
-        console.log("clearing the single rectangle = " + this)
+
     }
 
 }
@@ -148,14 +149,14 @@ class SnakeTop extends Snake {
 
     _moveSnakeToRight () {
         if(this.options.isMoving){
+
+            this._clearSnake()
             this._drawSnake()
+
             if(this.options.x > loader.width - this.options.width && !this.options.hasDispatched){
                 this.options.hasDispatched = true;
                 if(this.options.nextSnakeCallback) {
                     this.setNextSnakeCallback()
-                }
-                if(this.start()) {
-                    this._clearSnake()
                 }
             } else if(this.options.x >= loader.width){
                 this.options.isMoving = false;
@@ -165,8 +166,6 @@ class SnakeTop extends Snake {
 
 
         }
-        this._clearSnake()
-
 
         window.requestAnimationFrame(this._moveSnakeToRight.bind(this));
     }
@@ -188,6 +187,7 @@ class SnakeRight extends Snake {
 
     _moveSnakeDown () {
         if(this.options.isMoving) {
+            this._clearSnake()
             this._drawSnake()
 
             if(this.options.y > loader.height - this.options.height && !this.options.hasDispatched){
@@ -200,9 +200,7 @@ class SnakeRight extends Snake {
                 this.options.isMoving = false
             }
                 this.options.y += this.options.speed
-                console.log(this.options.y + " right.y")
         }
-            this._clearSnake()
         window.requestAnimationFrame(this._moveSnakeDown.bind(this));
 
     }
@@ -222,6 +220,8 @@ class SnakeBottom extends Snake {
 
     _moveSnakeToLeft () {
         if (this.options.isMoving) {
+
+            this._clearSnake()
             this._drawSnake()
 
             if(this.options.x < 0 && !this.options.hasDispatched){
@@ -229,17 +229,12 @@ class SnakeBottom extends Snake {
                 if(this.options.nextSnakeCallback) {
                     this.setNextSnakeCallback()
                 }
-                if(this.start()) {
-                    super._clearSnake()
-                }
             } else if (this.options.x < this.options.width) {
                 this.options.isMoving = false
             }
             this.options.x -= this.options.speed
-            console.log(this.options.x + " bottom.x")
 
         }
-            this._clearSnake()
 
             window.requestAnimationFrame(this._moveSnakeToLeft.bind(this));
     }
@@ -260,7 +255,8 @@ class SnakeLeft extends Snake {
 
     _moveSnakeUp () {
         if(this.options.isMoving) {
-            console.log(`snakeLeft is moving  = ${this.options.isMoving}`)
+
+            this._clearSnake()
             this._drawSnake()
 
             if(this.options.y < 0 && !this.options.hasDispatched) {
@@ -268,16 +264,12 @@ class SnakeLeft extends Snake {
                 if(this.options.nextSnakeCallback) {
                     this.setNextSnakeCallback()
                 }
-                if(this.start()) {
-                    super._clearSnake()
-                }
+
             } else if ( this.options.y >  - this.canvas.height) {
                 this.options.isMoving = false
             }
             this.options.y -= this.options.speed
-            console.log(this.options.y + " left.y")
         }
-            this._clearSnake()
             window.requestAnimationFrame(this._moveSnakeUp.bind(this));
     }
 }
