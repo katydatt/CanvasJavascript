@@ -1,11 +1,24 @@
-class Canvas{
-    constructor (height, width) {
-        this.canvas = document.createElement("canvas")
-        this.ctx = this.canvas.getContext('2d')
-        this.canvas.id = "canvas"
-        this.canvas.width = width + 'px'
-        this.canvas.height = height + 'px'
 
+
+class Loader {
+
+    constructor (width, height) {
+        this.width = width
+        this.height = height
+    }
+
+
+    _init() {
+        this._createCanvas()
+        this._bindEvents()
+    }
+    // create canvas
+    _createCanvas () {
+        this.canvas = document.createElement("canvas")
+        document.body.appendChild(this.canvas)
+        this.canvas.id = "canvas"
+        this.canvas.width = loader.width
+        this.canvas.height = loader.height
     }
 
     _throttle (callback, delay) {
@@ -28,13 +41,11 @@ class Canvas{
         }
     }
 
-
+    // resize canvas
     _resizeCanvas () {
         // resize canvas
         var canvasRatio = this.canvas.height / this.canvas.width;
-        console.log("canvas ratio " + canvasRatio)
         var windowRatio = window.innerHeight / window.innerWidth;
-        console.log("window ratio " + windowRatio)
         var width;
         var height;
 
@@ -46,9 +57,8 @@ class Canvas{
             height = width * canvasRatio;
         }
 
-        this.canvas.style.width = width + 'px';
-        this.canvas.style.height = height + 'px';
-        console.log(this.canvas.style.width + " " + this.canvas.style.height);
+        this.canvas.width = width
+        this.canvas.height = height
     }
 
     _bindEvents () {
@@ -66,234 +76,267 @@ class Canvas{
     }
 
 
-
 }
 
-let loader = new Canvas (100 , 100)
+
 
 class Snake {
-
-    constructor (selector, options = {}) {
+    constructor( options = {} ) {
         this.options = {
-            width: options.length || 300,
-            height: options.thickness || 20,
-            speed: options.speed || 4,
-            direction: options.direction || "right"
             x: options.x,
-            y: options.y
-        }
-
-        this.selector = typeof selector === 'string'
-            ? document.querySelector(selector)
-            : selector
-
-        this._globalVars()
-        this._init()
-
-        return this
-    }
-
-    _globalVars () {
-
-        this.isSnakeMoving = false
-        // this.canvas = false
-        this.snakes = []
-
-    }
-
-    _throttle (callback, delay) {
-        let last
-        let timer
-        return function () {
-            let context = this
-            let now = +new Date()
-            let args = arguments
-            if (last && now < last + delay) {
-                clearTimeout(timer)
-                timer = setTimeout(function () {
-                    last = now
-                    callback.apply(context, args)
-                }, delay)
-            } else {
-                last = now
-                callback.apply(context, args)
-            }
+            y: options.y,
+            height: options.height,
+            width: options.width,
+            isMoving: options.isMoving || false,
+            hasDispatched: options.hasDispatched || false,
+            nextSnakeCallback: options.nextSnakeCallback || null,
+            speed: options.speed || 4
         }
     }
 
-    _init () {
-        // this._createCanvas()
-        this._createSnake()
-        this._bindEvents()
+    _init() {
+        this._drawSnake()
     }
-
-    // _createCanvas () {
-    //     if (!this.canvas) {
-    //         this.canvas = document.createElement("canvas")
-    //         this.canvas.width = this.selector.clientWidth
-    //         this.canvas.height = this.selector.clientHeight
-    //         this.canvas.id = "canvas"
-    //         this.selector.appendChild(this.canvas)
-    //     }
-    // }
-
-
-    _createSnake () {
-            var ctx = this.canvas.getContext('2d')
-
-            ctx.beginPath()
-            ctx.rect(
-                this.options.x,
-                this.options.y,
-                this.options.length,
-                this.options.thickness)
-            ctx.fillStyle = "#f44242"
-            ctx.fill()
-    }
-
-    //
-    // _animateSnake () {
-    //
-    //     this._animateSnakeTop ()
-    //     this._animateSnakeRight ()
-    //     this._animateSnakeBottom ()
-    //     this._animateSnakeLeft ()
-    //
-    // }
-    _animateSnake () {
-       if (this.isSnakeMoving && this.snake.direction == "right") {
-            // if(this.x > this.canvas.width - this.length && !snakeRight.isSnakeMoving) {
-                this.isSnakeMoving = true;
-                this.x = canvas.width + this.length;
-            } else if(this.x >= this.canvas.width ) {
-                this.isSnakeMoving = false;
-                this.snake.direction =
-            } else {
-                this.x = this.length;
-            }
-
-            this.x += speed;
-
-       }
-
-       if ()
-   }
-   _animateSnakeRight() {
-       if (this.isSnakeMoving) {
-            if(this.x > this.canvas.height - this.length && !snakeBottom.isSnakeMoving) {
-                this.isSnakeMoving = true;
-                this.x = this.canvas.width - this.thickness;
-            } else if(this.x >= this.canvas.width ) {
-                this.isSnakeMoving = false;
-            } else {
-                this.x = - this.length;
-            }
-
-            this.y += speed;
-
-       }
-   }
-   _animateSnakeBottom() {
-       if (this.isSnakeMoving) {
-            if(this.x < 0 && !snakeLeft.isSnakeMoving) {
-                this.isSnakeMoving = true;
-                this.y = this.canvas.height - this.thickness;
-            } else if(this.x < - this.length ) {
-                this.isSnakeMoving = false;
-            } else {
-                this.x = this.canvas.width;
-            }
-
-            this.x -= speed;
-
-       }
-   }
-   _animateSnakeLeft() {
-       if (this.isSnakeMoving) {
-            if(this.y < 0 && !snakeTop.isSnakeMoving) {
-                this.isSnakeMoving = true;
-                this.x = -this.length + this.thickness;
-            } else if(this.x < - this.length ) {
-                this.isSnakeMoving = false;
-            } else {
-                this.y = this.canvas.height;
-            }
-
-            this.y -= speed;
-
-       }
-   }
-
-
-
-
-    // _bindEvents () {
-    // // create events listeners
-    //     this.resizeCanvas = this._throttle(function (event) {
-    //         this._resizeCanvas()
-    //     }.bind(this), 250)
-    //
-    //     window.addEventListener('resize', this.resizeCanvas, false)
-    // }
-    //
-    // _unbindEvents () {
-    // // remove events listeners
-    //     window.removeEventListener('resize', this.resizeCanvas, false)
-    // }
-
-    // _resizeCanvas () {
-    //     // resize canvas
-    //     var canvasRatio = this.canvas.height / this.canvas.width;
-    //     console.log("canvas ratio " + canvasRatio)
-    //     var windowRatio = window.innerHeight / window.innerWidth;
-    //     console.log("window ratio " + windowRatio)
-    //     var width;
-    //     var height;
-    //
-    //     if (windowRatio < canvasRatio) {
-    //         height = window.innerHeight;
-    //         width = height / canvasRatio;
-    //     } else {
-    //         width = window.innerWidth;
-    //         height = width * canvasRatio;
-    //     }
-    //
-    //     this.canvas.style.width = width + 'px';
-    //     this.canvas.style.height = height + 'px';
-    //     console.log(this.canvas.style.width + " " + this.canvas.style.height);
-    // }
-
-
     start () {
-
-        this._animateSnake ()
-
+        this.options.isMoving = true;
     }
 
     stop () {
-        // clearInterval()
+        this.options.isMoving = false;
+    }
+
+    reset () {
+        this.options.hasDispatched = false;
+    }
+
+    setNextSnakeCallback (callback) {
+        this.options.nextSnakeCallback = callback;
+    }
+
+    _drawSnake() {
+        this.canvas = document.getElementById("canvas")
+        this.ctx = this.canvas.getContext("2d")
+        this.ctx.beginPath()
+        this.ctx.rect(
+            this.options.x,
+            this.options.y,
+            this.options.width,
+            this.options.height)
+        this.ctx.fillStyle = "#f44242"
+        this.ctx.fill()
+
+    }
+
+    _clearSnake () {
+        this.ctx.clearRect(0, 0, loader.width, loader.height);
     }
 
 }
 
-let snakeTop = new Snake('.snakeContainer1', {
-    thickness: 20,
-    length: 300,
-    x: -300,
-    y: 0
-})
+class SnakeTop extends Snake {
+
+    constructor (options) {
+        super(options)
+    }
+
+    _init () {
+        super._drawSnake()
+        this._moveSnakeToRight()
+    }
+
+    reset () {
+        this.options.x = this.options.height;
+    }
+
+    _moveSnakeToRight () {
+        if(this.options.isMoving){
+            this._drawSnake()
+            if(this.options.x > loader.width - this.options.width && !this.options.hasDispatched){
+                this.options.hasDispatched = true;
+                if(this.options.nextSnakeCallback) {
+                    this.setNextSnakeCallback()
+                }
+            } else if(this.options.x >= loader.width){
+                this.options.isMoving = false;
+            }
+
+            this.options.x += this.options.speed
+            super._clearSnake()
 
 
-
-    setTimeout(function () {
-        // for(var i = 0 ; i < this.snakes.length; i++ ) {
-        //      this.snakes[i].start()
-        //      console.log(this.snakes[i])
         }
 
-        setTimeout(function () {
-            // this.snakes[i].stop()
+        window.requestAnimationFrame(this._moveSnakeToRight.bind(this));
+    }
 
-        }, 5000)
+}
 
-    }, 1000)
+
+class SnakeRight extends Snake {
+
+    constructor (options = {}) {
+        super(options)
+    }
+
+    _init() {
+        super._drawSnake()
+        super._clearSnake()
+        this._moveSnakeDown()
+    }
+
+    _moveSnakeDown () {
+        if(this.options.isMoving) {
+
+            if(this.options.y > loader.height - this.options.height && !this.options.hasDispatched){
+                this.options.hasDispatched = true;
+                if(this.options.nextSnakeCallback) {
+                    this.setNextSnakeCallback()
+                }
+            } else if (this.options.y > loader.height) {
+                this.options.isMoving = false
+            }
+                this.options.y += this.options.speed
+                console.log(this.options.y + " right.y")
+        }
+        window.requestAnimationFrame(this._moveSnakeDown.bind(this));
+
+    }
+}
+
+
+class SnakeBottom extends Snake {
+
+    constructor (options = {} ) {
+        super(options)
+    }
+    _init() {
+        super._drawSnake()
+        super._clearSnake()
+        this._moveSnakeToLeft()
+    }
+
+    _moveSnakeToLeft () {
+        if (this.options.isMoving) {
+
+            if(this.options.x < 0 && !this.options.hasDispatched){
+                this.options.hasDispatched = true
+                if(this.options.nextSnakeCallback) {
+                    this.setNextSnakeCallback()
+                }
+            } else if (this.options.x < this.options.width) {
+                this.options.isMoving = false
+            }
+            this.options.x -= this.options.speed
+            console.log(this.options.x + " bottom.x")
+
+        }
+            window.requestAnimationFrame(this._moveSnakeToLeft.bind(this));
+    }
+
+}
+
+
+class SnakeLeft extends Snake {
+    constructor(options = {}) {
+        super(options)
+    }
+
+    _init() {
+        super._drawSnake()
+        this._moveSnakeUp()
+    }
+
+    _moveSnakeUp () {
+        if(this.options.isMoving) {
+            console.log(`snakeLeft is moving  = ${this.options.isMoving}`)
+
+            if(this.options.y < 0 && !this.options.hasDispatched) {
+                this.options.hasDispatched = true
+                if(this.options.nextSnakeCallback) {
+                    this.setNextSnakeCallback()
+                }
+            } else if ( this.options.y >  - this.canvas.height) {
+                this.options.isMoving = false
+            }
+            this.options.y -= this.options.speed
+            console.log(this.options.y + " left.y")
+        }
+            window.requestAnimationFrame(this._moveSnakeUp.bind(this));
+    }
+}
+
+
+
+
+// defining the elements on the DOM
+
+let loader = new Loader (600, 600)
+loader._init()
+
+//CREATE SNAKES
+let snakeT = new SnakeTop ({
+    x: - 300,
+    y: 0,
+    height: 20,
+    width: 300
+})
+snakeT._init()
+
+
+//ASSIGN NEXT SNAKE callback
+snakeT.setNextSnakeCallback (()=>{
+    snakeR.reset();
+    snakeR.start();
+});
+
+//START FIRST SNAKE
+snakeT.start();
+
+//
+let snakeR = new SnakeRight ({
+    width: 20,
+    height: 300,
+    x: 580,
+    y: - 620
+})
+//ASSIGN NEXT SNAKE callback
+snakeR.setNextSnakeCallback (()=>{
+    snakeB.reset();
+    snakeB.start();
+});
+snakeR._init()
+
+//START FIRST SNAKE
+snakeR.start();
+
+let snakeB = new SnakeBottom ({
+    x: 600,
+    y: 580,
+    height: 20,
+    width: 300,
+})
+snakeB._init()
+//ASSIGN NEXT SNAKE callback
+snakeB.setNextSnakeCallback (()=>{
+    snakeL.reset();
+    snakeL.start();
+});
+//START FIRST SNAKE
+snakeB.start();
+
+
+let snakeL = new SnakeLeft ({
+    x: 0,
+    y: 600,
+    width: 20,
+    height: 300,
+})
+snakeL._init()
+//ASSIGN NEXT SNAKE callback
+snakeL.setNextSnakeCallback (()=>{
+    snakeT.reset();
+    snakeT.start();
+});
+
+//START FIRST SNAKE
+snakeL.start();
