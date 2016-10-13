@@ -101,10 +101,6 @@ class Snake {
         this.options.isMoving = true;
     }
 
-    stop () {
-        this.options.isMoving = false;
-    }
-
     reset () {
         this.options.hasDispatched = false;
     }
@@ -128,7 +124,8 @@ class Snake {
     }
 
     _clearSnake () {
-        this.ctx.clearRect(0, 0, loader.width, loader.height);
+        this.ctx.clearRect(this.options.x, this.options.y, this.options.width, this.options.height);
+        console.log("clearing the single rectangle = " + this)
     }
 
 }
@@ -142,6 +139,7 @@ class SnakeTop extends Snake {
     _init () {
         super._drawSnake()
         this._moveSnakeToRight()
+        super._clearSnake()
     }
 
     reset () {
@@ -156,15 +154,19 @@ class SnakeTop extends Snake {
                 if(this.options.nextSnakeCallback) {
                     this.setNextSnakeCallback()
                 }
+                if(this.start()) {
+                    this._clearSnake()
+                }
             } else if(this.options.x >= loader.width){
                 this.options.isMoving = false;
             }
 
             this.options.x += this.options.speed
-            super._clearSnake()
 
 
         }
+        this._clearSnake()
+
 
         window.requestAnimationFrame(this._moveSnakeToRight.bind(this));
     }
@@ -180,24 +182,27 @@ class SnakeRight extends Snake {
 
     _init() {
         super._drawSnake()
-        super._clearSnake()
         this._moveSnakeDown()
+        super._clearSnake()
     }
 
     _moveSnakeDown () {
         if(this.options.isMoving) {
+            this._drawSnake()
 
             if(this.options.y > loader.height - this.options.height && !this.options.hasDispatched){
                 this.options.hasDispatched = true;
                 if(this.options.nextSnakeCallback) {
                     this.setNextSnakeCallback()
                 }
+
             } else if (this.options.y > loader.height) {
                 this.options.isMoving = false
             }
                 this.options.y += this.options.speed
                 console.log(this.options.y + " right.y")
         }
+            this._clearSnake()
         window.requestAnimationFrame(this._moveSnakeDown.bind(this));
 
     }
@@ -211,17 +216,21 @@ class SnakeBottom extends Snake {
     }
     _init() {
         super._drawSnake()
-        super._clearSnake()
         this._moveSnakeToLeft()
+        super._clearSnake()
     }
 
     _moveSnakeToLeft () {
         if (this.options.isMoving) {
+            this._drawSnake()
 
             if(this.options.x < 0 && !this.options.hasDispatched){
                 this.options.hasDispatched = true
                 if(this.options.nextSnakeCallback) {
                     this.setNextSnakeCallback()
+                }
+                if(this.start()) {
+                    super._clearSnake()
                 }
             } else if (this.options.x < this.options.width) {
                 this.options.isMoving = false
@@ -230,6 +239,8 @@ class SnakeBottom extends Snake {
             console.log(this.options.x + " bottom.x")
 
         }
+            this._clearSnake()
+
             window.requestAnimationFrame(this._moveSnakeToLeft.bind(this));
     }
 
@@ -244,16 +255,21 @@ class SnakeLeft extends Snake {
     _init() {
         super._drawSnake()
         this._moveSnakeUp()
+        super._clearSnake()
     }
 
     _moveSnakeUp () {
         if(this.options.isMoving) {
             console.log(`snakeLeft is moving  = ${this.options.isMoving}`)
+            this._drawSnake()
 
             if(this.options.y < 0 && !this.options.hasDispatched) {
                 this.options.hasDispatched = true
                 if(this.options.nextSnakeCallback) {
                     this.setNextSnakeCallback()
+                }
+                if(this.start()) {
+                    super._clearSnake()
                 }
             } else if ( this.options.y >  - this.canvas.height) {
                 this.options.isMoving = false
@@ -261,6 +277,7 @@ class SnakeLeft extends Snake {
             this.options.y -= this.options.speed
             console.log(this.options.y + " left.y")
         }
+            this._clearSnake()
             window.requestAnimationFrame(this._moveSnakeUp.bind(this));
     }
 }
